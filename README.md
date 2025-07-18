@@ -1,4 +1,39 @@
-# esp-idf-benchmark
+# Badge Benchmark
+
+This is a quck and dirty hack from [the original repository](https://github.com/nopnop2002/esp-idf-benchmark) to run on ESP-IDF enabled badges, such as the ones from [badge.tam](badge.team)
+
+I just wanted to see how powerful the ESP32P4 from the Konsool/Tanmatsu is in comparison to the other ESP32, so I mixed the original project with https://github.com/Nicolai-Electronics/tanmatsu-template-pax to make it work
+
+I am bodging some code from https://github.com/keever50/tanmatsu_usbterminal to try to print the results to the LCD screen, but it is WiP
+
+Running on my Tanmatsu, the results from the first hacked up code is:
+```
+Target is ESP32P4@360Mhz
+
+Dhrystone Benchmark, Version C, Version 2.2
+Program compiled without 'register' attribute
+Using time(), HZ=1
+
+Trying 50000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 500000 runs through Dhrystone:
+Measured time too small to obtain meaningful results
+
+Trying 5000000 runs through Dhrystone:
+Microseconds for one run through Dhrystone:        0.4 
+Dhrystones per Second:                         2500000 
+DMIPS:                                            1423 
+
+
+Loops: 1000, Iterations: 1, Duration: 2 sec.
+C Converted Double Precision Whetstones: 50.0 MIPS
+```
+
+What continues next is the original readme:
+
+# esp-idf-benchmark readme
+
 Dhrystone/Whetstone benchmark for esp-idf.   
 I wanted to know the computing power of the ESP32-C3.   
 
