@@ -1,0 +1,4 @@
+*.orig
+build/
+esp-idf
+esp-idf-tools

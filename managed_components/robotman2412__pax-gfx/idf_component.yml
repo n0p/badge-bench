@@ -1,0 +1,5 @@
+repository: git://github.com/robotman2412/pax-graphics.git
+repository_info:
+  commit_sha: d0e7d4e9353ce162386b33798e19fe29ad2f9358
+  path: .
+version: 1.1.2

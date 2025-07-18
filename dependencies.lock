@@ -1,0 +1,209 @@
+dependencies:
+  badgeteam/badge-bsp:
+    component_hash: 1330e8a1ff12e6600580c7d469014d989a521a28afc65dda250418f9340fde94
+    dependencies:
+    - name: badgeteam/mch2022-rp2040
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: target == esp32
+      version: ^0.0.2
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: espressif/esp_lcd_ili9341
+      registry_url: https://components.espressif.com
+      require: private
+      version: ^2.0.0
+    - name: idf
+      require: private
+      version: '>=5.3'
+    - name: nicolaielectronics/es8156
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: target == esp32p4
+      version: '*'
+    - name: nicolaielectronics/mipi_dsi_abstraction
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: target == esp32p4
+      version: ^0.0.4
+    - name: nicolaielectronics/tanmatsu_coprocessor
+      registry_url: https://components.espressif.com
+      require: private
+      rules:
+      - if: target == esp32p4
+      version: ^0.5.0
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32
+    - esp32p4
+    version: 0.0.2
+  badgeteam/terminal-emulator:
+    component_hash: 37b5a797ac37075c2748c728b2c525e4a9c308de987b5800fc0275f0c72c0d3d
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.3'
+    - name: robotman2412/pax-gfx
+      registry_url: https://components.espressif.com
+      require: private
+      version: ^1.1.2
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.0.2
+  espressif/cmake_utilities:
+    component_hash: 351350613ceafba240b761b4ea991e0f231ac7a9f59a9ee901f751bddc0bb18f
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.1'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    version: 0.5.3
+  espressif/esp_lcd_ek79007:
+    component_hash: 07c1afab7e9fd4dd2fd06ff9245e65327c5bbd5485efec199496e19a9304d47b
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32p4
+    version: 1.0.2
+  espressif/esp_lcd_ili9341:
+    component_hash: c6b96c14fa22ab9b80251812f7dbd7dd1b255ccd68abb0cef97a276df711a4ec
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4'
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    version: 2.0.0
+  espressif/esp_lcd_ili9881c:
+    component_hash: f4f374226b62baf13f735864e8fae58e17c537df34d598e059f6caad4761ef65
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32p4
+    version: 1.0.1
+  espressif/esp_lcd_st7701:
+    component_hash: 39cea941e1e0e6c47408395d79834c04eac2e308309432af36d94e035b9239d5
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: idf
+      require: private
+      version: '>5.0.4,!=5.1.1'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32s3
+    - esp32p4
+    version: 1.1.3
+  idf:
+    source:
+      type: idf
+    version: 5.5.0
+  nicolaielectronics/es8156:
+    component_hash: ec436055840848f2ea93c5fe8c7e3e7d15f34bc08404f0c77c990c54cef05968
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32
+    - esp32p4
+    version: 0.0.1
+  nicolaielectronics/mipi_dsi_abstraction:
+    component_hash: 43a5858d8ae7b5330662d5cded8a5df19842d0e4a0d581db5441490dee88e3b7
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: espressif/esp_lcd_ek79007
+      registry_url: https://components.espressif.com
+      require: private
+      version: ^1.0.0
+    - name: espressif/esp_lcd_ili9881c
+      registry_url: https://components.espressif.com
+      require: private
+      version: ^1.0.0
+    - name: espressif/esp_lcd_st7701
+      registry_url: https://components.espressif.com
+      require: private
+      version: ^1.1.1
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32p4
+    version: 0.0.4
+  nicolaielectronics/tanmatsu_coprocessor:
+    component_hash: bccf874394bdff57a8b62d17191adedf766cb51f7722a4a4d658bebd6e7568b0
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: idf
+      require: private
+      version: '>=5.3'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    targets:
+    - esp32p4
+    version: 0.5.0
+  robotman2412/pax-gfx:
+    component_hash: 286d244dcd311355acfce565ca0e18ff86732075da2a10050e008f9bd7c74ce0
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.1.2
+direct_dependencies:
+- badgeteam/badge-bsp
+- badgeteam/terminal-emulator
+- idf
+- robotman2412/pax-gfx
+manifest_hash: 1135d0575856ff86fdbac37ca43ea2ada9ef9d22674aac5d8e1ea495de193cda
+target: esp32p4
+version: 2.0.0
