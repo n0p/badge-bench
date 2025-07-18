@@ -1,4 +1,11 @@
-set(component_srcs "main.c" "dhrystone.c" "whetstone.c")
-
-idf_component_register(SRCS "${component_srcs}" INCLUDE_DIRS ".")
-
+idf_component_register(
+	SRCS
+		"main.c" "dhrystone.c" "whetstone.c"
+	PRIV_REQUIRES
+		esp_lcd
+		fatfs
+		nvs_flash
+		badge-bsp
+	INCLUDE_DIRS
+		"."
+)
