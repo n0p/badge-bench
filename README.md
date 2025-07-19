@@ -1,6 +1,6 @@
 # Badge Benchmark
 
-This is a quck and dirty hack from [the original repository](https://github.com/nopnop2002/esp-idf-benchmark) to run on ESP-IDF enabled badges, such as the ones from [badge.tam](badge.team)
+This is a quick and dirty hack from [the original repository](https://github.com/nopnop2002/esp-idf-benchmark) to run on ESP-IDF enabled badges, such as the ones from [badge.team](badge.team)
 
 I just wanted to see how powerful the ESP32P4 from the Konsool/Tanmatsu is in comparison to the other ESP32, so I mixed the original project with https://github.com/Nicolai-Electronics/tanmatsu-template-pax to make it work
 

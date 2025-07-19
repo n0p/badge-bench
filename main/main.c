@@ -14,6 +14,9 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_types.h"
 
+#include "esp_dsp.h"
+#include "esp_timer.h"
+
 #define BUF_SIZE (1024*16)
 
 void dhrystone(void *pvParameters);
@@ -53,6 +56,280 @@ void main_draw()
                             display_v_res,
                             pixels);
 }
+
+const int N = 1024; // 128 for testing datasets that fit entirely in internal RAM
+const int M = 1024; // 128
+
+void calculateAndPrintMMACS(int numOps, int64_t startTime, int64_t endTime)
+{
+    int64_t total = endTime - startTime;
+    double timeInSecs = total / 1000000.0;
+    double macs = numOps / timeInSecs;
+    double mmacs = macs / 1000000.0;
+    printf("completed in %" PRId64 " us (%f MMACS)\n", total, mmacs);
+}
+
+/*
+template<typename T>
+void stdCTest(char* name, T* x, T* y)
+{
+    printf("Standard C test using %s\n", name);
+    printf("---------------\n");
+
+    printf("Performing %d multiply-accumulates...", N * M);
+    T z[M];
+    T* ptr;
+
+    int64_t startTime = esp_timer_get_time();
+    for (int i = 0; i < M; i++)
+    {
+        T acc = 0;
+        ptr = &x[i*N];
+        for (int j = 0; j < N; j++)
+        {
+            acc += *ptr++ * y[j];
+        }
+        z[i] = acc;
+    }
+    int64_t endTime = esp_timer_get_time();
+
+    // To avoid optimizing out the above loop
+    int tmpAcc = 0;
+    for (int i = 0; i < N; i++)
+    {
+        tmpAcc += z[i];
+    }
+
+    // Print results
+    printf("(accum %d--needed to avoid being optimized out)...", tmpAcc);
+    calculateAndPrintMMACS(N * M, startTime, endTime);
+    printf("---------------\n\n");
+}
+*/
+#include <stdint.h>
+#include <stdio.h>
+#include <inttypes.h>
+
+void stdCTest_int8(const char* name, int8_t* x, int8_t* y)
+{
+    printf("Standard C test using %s\n", name);
+    printf("---------------\n");
+
+    printf("Performing %d multiply-accumulates...", N * M);
+    int32_t z[M];
+    int8_t* ptr;
+
+    int64_t startTime = esp_timer_get_time();
+    for (int i = 0; i < M; i++)
+    {
+        int32_t acc = 0;
+        ptr = &x[i * N];
+        for (int j = 0; j < N; j++)
+        {
+            acc += (int32_t)(*ptr++) * y[j];
+        }
+        z[i] = acc;
+    }
+    int64_t endTime = esp_timer_get_time();
+
+    int32_t tmpAcc = 0;
+    for (int i = 0; i < N; i++)
+    {
+        tmpAcc += z[i];
+    }
+
+    printf("(accum %" PRId32 " -- needed to avoid being optimized out)...", tmpAcc);
+    calculateAndPrintMMACS(N * M, startTime, endTime);
+    printf("---------------\n\n");
+}
+
+void stdCTest_int16(const char* name, int16_t* x, int16_t* y)
+{
+    printf("Standard C test using %s\n", name);
+    printf("---------------\n");
+
+    printf("Performing %d multiply-accumulates...", N * M);
+    int32_t z[M];
+    int16_t* ptr;
+
+    int64_t startTime = esp_timer_get_time();
+    for (int i = 0; i < M; i++)
+    {
+        int32_t acc = 0;
+        ptr = &x[i * N];
+        for (int j = 0; j < N; j++)
+        {
+            acc += (int32_t)(*ptr++) * y[j];
+        }
+        z[i] = acc;
+    }
+    int64_t endTime = esp_timer_get_time();
+
+    int32_t tmpAcc = 0;
+    for (int i = 0; i < N; i++)
+    {
+        tmpAcc += z[i];
+    }
+
+    printf("(accum %" PRId32 " -- needed to avoid being optimized out)...", tmpAcc);
+    calculateAndPrintMMACS(N * M, startTime, endTime);
+    printf("---------------\n\n");
+}
+
+void stdCTest_int32(const char* name, int32_t* x, int32_t* y)
+{
+    printf("Standard C test using %s\n", name);
+    printf("---------------\n");
+
+    printf("Performing %d multiply-accumulates...", N * M);
+    int64_t z[M];
+    int32_t* ptr;
+
+    int64_t startTime = esp_timer_get_time();
+    for (int i = 0; i < M; i++)
+    {
+        int64_t acc = 0;
+        ptr = &x[i * N];
+        for (int j = 0; j < N; j++)
+        {
+            acc += (int64_t)(*ptr++) * y[j];
+        }
+        z[i] = acc;
+    }
+    int64_t endTime = esp_timer_get_time();
+
+    int64_t tmpAcc = 0;
+    for (int i = 0; i < N; i++)
+    {
+        tmpAcc += z[i];
+    }
+
+    printf("(accum %" PRId64 " -- needed to avoid being optimized out)...", tmpAcc);
+    calculateAndPrintMMACS(N * M, startTime, endTime);
+    printf("---------------\n\n");
+}
+
+void simdTestInt16(int16_t* x, int16_t* y)
+{
+    printf("SIMD test using int16\n");
+    printf("---------------\n");
+
+    printf("Performing %d multiply-accumulates...", N * M);
+    int16_t z[M];
+
+    int64_t startTime = esp_timer_get_time();
+    for (int i = 0; i < M; i++)
+    {
+        dsps_dotprod_s16(&x[i*M], y, &z[i], N, 15);
+    }
+    int64_t endTime = esp_timer_get_time();
+
+    // To avoid optimizing out the above loop
+    int tmpAcc = 0;
+    for (int i = 0; i < N; i++)
+    {
+        tmpAcc += z[i];
+    }
+
+    // Print results
+    printf("(accum %d--needed to avoid being optimized out)...", tmpAcc);
+    calculateAndPrintMMACS(N * M, startTime, endTime);
+    printf("---------------\n\n");
+}
+
+void simdTestInt16Matrix(int16_t* x, int16_t* y)
+{
+    printf("SIMD test using int16 matrix fns\n");
+    printf("---------------\n");
+
+    printf("Performing %d multiply-accumulates...", N * M);
+    int16_t z[M];
+
+    int64_t startTime = esp_timer_get_time();
+    dspm_mult_s16(x, y, z, M, N, 1, 15);
+    int64_t endTime = esp_timer_get_time();
+
+    // To avoid optimizing out the above loop
+    int tmpAcc = 0;
+    for (int i = 0; i < N; i++)
+    {
+        tmpAcc += z[i];
+    }
+
+    // Print results
+    printf("(accum %d--needed to avoid being optimized out)...", tmpAcc);
+    calculateAndPrintMMACS(N * M, startTime, endTime);
+    printf("---------------\n\n");
+}
+
+/*
+void simdTestInt8(int8_t* x, int8_t* y)
+{
+    printf("SIMD test using int8\n");
+    printf("---------------\n");
+
+    printf("Perfoming %d multiply-accumulates...", N * M);
+    int64_t startTime = esp_timer_get_time();
+
+    int8_t* ptr = x;
+    int8_t* dataPtr = y;
+    int8_t z[M];
+    int8_t* zPtr = &z[0];
+
+    int n = M;
+    int p = N >> 4;
+
+    asm volatile(
+        "movi a9, 8\n"                                                       // a9 = 8
+        "simd_loop_begin:\n"                                                 // while (n > 0) {
+        "    movi a11, 0\n"                                                  //    a11 = 0
+        "    loopgtz %[p], inner_loop_end\n"                                 //    while (p > 0) {
+        "        ee.zero.accx\n"                                             //        Zero accx
+        "        ld.qr q0, %[ptr], 0\n"                                      //        Load ptr into q0
+        "        ld.qr q1, %[dataPtr], 0\n"                                  //        Load dataPtr into q1
+        "        addi %[ptr], %[ptr], 16\n"                                  //        ptr += 16
+        "        addi %[dataPtr], %[dataPtr], 16\n"                          //        dataPtr += 16
+        "        ee.vmulas.s8.accx q0, q1\n"                                 //        accx += q0[0] * q1[0] + q0[1] * q1[1] + ...
+        "        ee.srs.accx a10, a9, 0\n"                                   //        a10 = accx >> a9
+        "        add a11, a11, a10\n"                                        //        a11 += a10
+        "    inner_loop_end:\n"                                              //    }
+        "    s8i a11, %[zPtr], 0\n"                                          //    Store value of a10 to memory location zPtr
+        "    addi %[zPtr], %[zPtr], 1\n"                                     //    zPtr++
+        "    addi %[dataPtr], %[dataPtr], -1024\n"                           //    dataPtr -= 1024
+        "    addi %[n], %[n], -1\n"                                          //    n--
+        "    bnez %[n], simd_loop_begin\n"                                   // }
+
+        : // outputs
+          [ptr] "=r"(ptr),
+          [zPtr] "=r"(zPtr),
+          [dataPtr] "=r"(dataPtr),
+          [p] "=r"(p),
+          [n] "=r"(n)
+
+        : // inputs
+          "0"(ptr),
+          "1"(zPtr),
+          "2"(dataPtr),
+          "3"(p),
+          "4"(n)
+
+        :// clobbers
+          "a9", "a10", "a11", "memory"
+    );
+
+
+    int tmpAcc = 0;
+    for (int i = 0; i < N; i++)
+    {
+        tmpAcc += z[i];
+    }
+
+    printf("(accum %d)...", tmpAcc);
+    int64_t endTime = esp_timer_get_time();
+    calculateAndPrintMMACS(N * M, startTime, endTime);
+    printf("\n");
+}
+*/
 
 void app_main(void) {
     // Start the GPIO interrupt service
@@ -112,6 +389,46 @@ void app_main(void) {
 	xTaskCreate(&whetstone, "WHET", 1024*4, (void *)taskHandle, my_prio+1, NULL);
 	ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 	ESP_LOGD(my_name, "ulTaskNotifyTake");
+
+
+// https://github.com/tmiw/esp32s3-benchmark/blob/main/main/esp32s3-benchmark.cpp
+// https://freedv.org/measuring-esp32-s3-performance-for-radae/
+    // RADAE should need ~300MMACS
+
+    printf("Initializing memory with random values...");
+
+    int64_t startTime = esp_timer_get_time();
+    int8_t* x = (int8_t*)malloc(N * M * sizeof(int));
+    int y[N];
+
+    assert(x != NULL);
+
+    int8_t* ptr = x;
+    for (int i = 0; i < N * M; i++)
+    {
+        *ptr++ = rand() * 128;
+    }
+
+    ptr = (int8_t*)y;
+    for (int i = 0; i < N; i++)
+    {
+        *ptr++ = rand() * 128;
+    }
+
+    int64_t endTime = esp_timer_get_time();
+    printf("completed in %" PRIu64 " us\n", endTime - startTime);
+
+    //simdTestInt8(x, (int8_t*)y);
+    simdTestInt16((int16_t*)x, (int16_t*)y);
+    simdTestInt16Matrix((int16_t*)x, (int16_t*)y);
+
+    stdCTest_int8("int8", x, (int8_t*)y);
+    stdCTest_int16("int16", (int16_t*)x, (int16_t*)y);
+    stdCTest_int32("int32", (int32_t*)x, (int32_t*)y);
+    //stdCTest<float>("float");
+
+    // Free memory
+    free(x);
 
 }
 

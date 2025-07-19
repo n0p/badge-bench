@@ -68,6 +68,16 @@ dependencies:
       registry_url: https://components.espressif.com
       type: service
     version: 0.5.3
+  espressif/esp-dsp:
+    component_hash: 42dce32d46ac93dc11f60d368e29a830e9661c7345d794b8a45c343479cae636
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.2'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.7.0
   espressif/esp_lcd_ek79007:
     component_hash: 07c1afab7e9fd4dd2fd06ff9245e65327c5bbd5485efec199496e19a9304d47b
     dependencies:
@@ -202,8 +212,9 @@ dependencies:
 direct_dependencies:
 - badgeteam/badge-bsp
 - badgeteam/terminal-emulator
+- espressif/esp-dsp
 - idf
 - robotman2412/pax-gfx
-manifest_hash: 1135d0575856ff86fdbac37ca43ea2ada9ef9d22674aac5d8e1ea495de193cda
+manifest_hash: 0e78f889381e6dd5d9deddc0e22d86977e3e29997dc3fc5d0f723f7f838b8cb5
 target: esp32p4
 version: 2.0.0
